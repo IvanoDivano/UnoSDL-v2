@@ -50,7 +50,7 @@ void RenderWindow::render(Entity& p_entity){
     SDL_RenderCopy(renderer, p_entity.getTex(), &src, &dst);
 }
 
-void RenderWindow::textRender(SDL_Color p_color, int p_size, std::string p_txt, SDL_Point p_rectSize){
+void RenderWindow::textRender(SDL_Color p_color, SDL_Point p_pos, int p_size, std::string p_txt, SDL_Point p_rectSize){
     //Add Custom Fonts, via path in global var
     
     TTF_Init();
@@ -60,8 +60,8 @@ void RenderWindow::textRender(SDL_Color p_color, int p_size, std::string p_txt, 
     SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfmsg);
 
     SDL_Rect msg_rect;
-    msg_rect.x = 0;
-    msg_rect.y = 0;
+    msg_rect.x = p_pos.x;
+    msg_rect.y = p_pos.y;
     msg_rect.w = p_rectSize.x;
     msg_rect.h = p_rectSize.y;
 

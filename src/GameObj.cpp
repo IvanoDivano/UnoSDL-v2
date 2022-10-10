@@ -177,12 +177,12 @@ void Enemy::Render(RenderWindow& p_win)
 {
     SDL_Texture* backTex = p_win.loadTexture("res/gfx/Back.png");
 
-    int cSide = 10;
+    int cSide = 20;
     float cWidth = 50 * c_scale;
     float cHeight = 70 * c_scale;
     std::vector <Entity> tmp;
 
-    SDL_Point point {W_RES - (W_RES - 50 + ((c.size()-1) * cSide))/2, 0};
+    SDL_Point point {W_RES - ((W_RES - ((c.size()-1) * cSide) + cWidth)/2), 0};
 
     for(int i = 0; i < c.size(); i++)
     {
@@ -195,10 +195,21 @@ void Enemy::Render(RenderWindow& p_win)
 
 void Deck::Render(RenderWindow& p_win)
 {
+    SDL_Texture* backTex = p_win.loadTexture("res/gfx/Back.png");
+    SDL_Point pos {((W_RES / 3) * 2) - 50*c_scale/2, H_RES/2 - 70*c_scale/2};
+    Entity e(pos, backTex);
+    p_win.render(e);
+    pos.x += 50*c_scale;
 
+
+    std::string nCards;
+    nCards += std::to_string(c.size());
+    p_win.textRender({255, 255, 255}, pos, 36*c_scale, nCards, {50, 70});
 }
 
 void DiscardPile::Render(RenderWindow& p_win)
 {
-
+    SDL_Point pos {(W_RES / 3) - 50*c_scale/2, H_RES/2 - 70*c_scale/2}; 
+    Entity e(pos, c.back().tex);
+    p_win.render(e);
 }

@@ -23,14 +23,12 @@ void GameTable::OpponentDraws(int n)
     }
 };
 
-
 void GameTable::RenderGameTable(){
     p1.Render(rWin);
     ai.Render(rWin);
     deck.Render(rWin);
     pile.Render(rWin);
 };
-
 
 void GameTable::StartTheGame()
 {
@@ -48,3 +46,57 @@ void GameTable::StartTheGame()
     deck.c.pop_back();
 
 };
+
+void GameTable::PlayerMovesLeft(){
+    if(p1.indx != 0) {p1.indx-=1;};
+    return;
+}
+
+void GameTable::PlayerMovesRight(){
+    if (p1.indx != p1.c.size()) {p1.indx+=1;};
+    return;
+}
+
+std::vector <bool> GameTable::CheckMoves(bool player){
+    //player true if the enemy is not playing;
+
+    int nCards;
+    int pColor = pile.getCol();
+    int pValue = pile.getVal();
+    int indx = p1.getIndx();
+    std::vector <Card> c;
+    
+    if (player) {nCards == p1.c.size();}
+    else {nCards == ai.c.size();}
+
+    std::vector <bool> tmp;
+    
+    bool NoMoves = true;
+    bool SameVal;
+    bool SameCol;
+    bool IsBlack;
+    for(int i = 0; i < nCards; i++)
+    {
+        SameVal = c[indx].val == pValue;
+        SameCol = c[indx].col == pColor;
+        IsBlack = c[indx].val == 13 || c[indx].val == 14;
+        tmp[i] = SameVal || SameCol || IsBlack;
+        if (tmp[i]) NoMoves = false;
+    }
+
+    if (NoMoves){tmp.push_back(false);}
+
+    return tmp;
+}
+
+bool GameTable::PlayerPlay(){
+    std::vector<bool> set = CheckMoves(true);
+    if (set[p1.getIndx()])
+    {
+        pile.c.push_back(p1.c[p1.getIndx()]);
+        p1.c.erase(p1.c.begin() + p1.indx);
+        
+        return true;
+    }
+    return false;
+}

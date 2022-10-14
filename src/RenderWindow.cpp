@@ -50,11 +50,11 @@ void RenderWindow::render(Entity& p_entity){
     SDL_RenderCopy(renderer, p_entity.getTex(), &src, &dst);
 }
 
-void RenderWindow::textRender(SDL_Color p_color, SDL_Point p_pos, int p_size, std::string p_txt, SDL_Point p_rectSize){
+void RenderWindow::textRender(SDL_Color p_color, SDL_Point p_pos, int p_size, std::string p_txt){
     //Add Custom Fonts, via path in global var
     
     TTF_Init();
-    TTF_Font* alagard = TTF_OpenFont("res/font/alagard.ttf", p_size);
+    TTF_Font* alagard = TTF_OpenFont("res/font/alagard.ttf", p_size*c_scale);
     
     SDL_Surface* surfmsg = TTF_RenderText_Solid(alagard, p_txt.c_str(), p_color);
     SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfmsg);
@@ -62,11 +62,13 @@ void RenderWindow::textRender(SDL_Color p_color, SDL_Point p_pos, int p_size, st
     SDL_Rect msg_rect;
     msg_rect.x = p_pos.x;
     msg_rect.y = p_pos.y;
-    msg_rect.w = p_rectSize.x;
-    msg_rect.h = p_rectSize.y;
+    msg_rect.w = surfmsg->w;
+    msg_rect.h = surfmsg->h;
 
     SDL_RenderCopy(renderer, Message, NULL, &msg_rect);
     SDL_FreeSurface(surfmsg);
     SDL_DestroyTexture(Message);
 }
-
+void RenderWindow::toggleFullScreen(){
+    if (c_scale == 2){SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);}
+}

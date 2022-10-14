@@ -21,4 +21,9 @@ public:
     void PlayerDraws(int n);
     void OpponentDraws(int n);
     void RenderGameTable();
+    std::vector <bool> CheckMoves(bool player);
+
+    bool PlayerPlay();
+    void PlayerMovesLeft();
+    void PlayerMovesRight();
 };

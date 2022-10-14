@@ -30,7 +30,11 @@ struct CardArray
 class Player : public CardArray
 {
 public:
+    int indx = 0;
     void Render(RenderWindow& p_win);
+    int getVal(){return c[indx].val;};
+    int getCol(){return c[indx].col;};
+    int getIndx(){return indx;};
 };
 
 class Enemy : public CardArray
@@ -50,6 +54,8 @@ public:
 class DiscardPile : public CardArray
 {
 public:
+    int getCol(){return c.back().col;};
+    int getVal(){return c.back().val;};
     void Render(RenderWindow& p_win);
     void Reset();
 };

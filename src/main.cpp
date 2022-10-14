@@ -11,6 +11,10 @@
 #include "GameTable.hpp"
 
 bool gameRunning = true;
+bool ShoudlDrawCard = false;
+bool ShouldMoveLeft = false;
+bool ShouldMoveRight = false;
+bool TryPlayCard = false;
 
 int main(int argc, char const *argv[])
 {
@@ -25,7 +29,7 @@ int main(int argc, char const *argv[])
 
     RenderWindow window("UNO with an RPG twist", W_RES, H_RES);
 
-    printf("Display Refresh Rate: %d\nWindow Resolution: %dx%d", window.getRefreshRate(), W_RES, H_RES);
+    printf("Display Refresh Rate: %d\nWindow Resolution: %dx%d\n", window.getRefreshRate(), W_RES, H_RES);
 
     Player p1;
     Enemy ai;
@@ -42,17 +46,43 @@ int main(int argc, char const *argv[])
     {
         while (SDL_PollEvent(&event))
         {
-            if (event.type == SDL_QUIT)
-                gameRunning = false;
+            switch (event.type)
+            {
+                case SDL_QUIT:
+                    gameRunning = false; break;
+                    
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym)
+                    {
+                        case SDLK_ESCAPE:
+                        gameRunning = false; break;
+
+                        case SDLK_LCTRL:
+                        ShoudlDrawCard = true; break;
+
+                        case SDLK_LEFT: ShouldMoveLeft = true; break;
+
+                        case SDLK_RIGHT: ShouldMoveRight = true; break;
+                        
+                        case SDLK_e: TryPlayCard = true; break;
+
+                        case SDLK_f:
+                        //toggle fullscreen, changes scale and res
+                        //window.setFullScreen
+                        break;
+                    }
+                break;
+            }
         }
 
         window.clear();
 
         Game.RenderGameTable();
-        Game.OpponentDraws(1);
-        Game.PlayerDraws(1);
-        SDL_Delay(200);
-
+        
+        if (ShouldMoveLeft) {Game.PlayerMovesLeft(); ShouldMoveLeft = false;}
+        if (ShouldMoveRight) {Game.PlayerMovesRight(); ShouldMoveRight = false;}
+        if (TryPlayCard) {Game.PlayerPlay(); TryPlayCard = false;}
+        if (ShoudlDrawCard) {Game.PlayerDraws(1); ShoudlDrawCard = false;}
         window.display();
     }
 

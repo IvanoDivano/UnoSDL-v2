@@ -90,6 +90,7 @@ Card::Card(int p_value, int p_color, RenderWindow& p_win)
     path.append(".png");
     tex = p_win.loadTexture(path);
 };
+
 void Deck::Init(RenderWindow& p_win)
 {
     for (int i = 0; i < 13; i++)
@@ -133,44 +134,34 @@ void Deck::Shuffle()
 void Player::Render(RenderWindow& p_win){
     float cWidth = 50 * c_scale;
     float cHeight = 70 * c_scale;
+    int cSide = 20 * c_scale;
 
-    int cpl = W_RES / cWidth;
+    int cSpaceTanken = ((c.size()-1) * cSide) + cWidth;
+
 
     std::vector <Entity> tmp;
 
-    //Figure out how many lines to draw
+    SDL_Point pos = {(W_RES - cSpaceTanken)/2, H_RES - cHeight};
+    SDL_Point posIndx = pos; 
+    
+    posIndx.x += cSide * indx;
+    posIndx.y -= 55 * c_scale;
 
-    if (c.size() <= cpl)
+    
+    for(Card card : this->c)
     {
-        SDL_Point point{(W_RES - c.size() * cWidth)/2, H_RES - cHeight};
-
-        for(int i = 0; i < c.size(); i++)
-        {
-            tmp.push_back(Entity(point, c[i].tex));
-            point.x += cWidth; 
-        }
-    } 
-
-    else
-    {
-        SDL_Point point {(W_RES - cpl*50*c_scale)/2, H_RES - 70*2*c_scale};
-        for(int i = 0; i < cpl; i++)
-        {
-            tmp.push_back(Entity(point, c[i].tex));
-            point.x += cWidth;
-        }
-
-            point.y += cHeight;
-            point.x = (W_RES - cpl * 50 * c_scale)/2;
-
-        for(int i = cpl; i < c.size(); i++)
-        {
-            tmp.push_back(Entity(point, c[i].tex));
-            point.x += cWidth;
-        }
+        tmp.push_back(Entity(pos, card.tex));
+        pos.x += cSide;
     }
 
+    //Figure out how many lines to draw
+
+    
+    tmp[indx] = Entity(posIndx, tmp[indx].getTex());
+
     for (Entity& e : tmp){p_win.render(e);}
+
+    
 }
 
 void Enemy::Render(RenderWindow& p_win)
@@ -199,12 +190,11 @@ void Deck::Render(RenderWindow& p_win)
     SDL_Point pos {((W_RES / 3) * 2) - 50*c_scale/2, H_RES/2 - 70*c_scale/2};
     Entity e(pos, backTex);
     p_win.render(e);
-    pos.x += 50*c_scale;
-
-
+    pos.x += 50*c_scale + 30;
+    pos.y += 5;
     std::string nCards;
     nCards += std::to_string(c.size());
-    p_win.textRender({255, 255, 255}, pos, 36*c_scale, nCards, {50, 70});
+    p_win.textRender({255, 255, 255}, pos, 32*c_scale, nCards);
 }
 
 void DiscardPile::Render(RenderWindow& p_win)

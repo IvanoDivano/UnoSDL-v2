@@ -25,6 +25,7 @@ void GameTable::OpponentDraws(int n)
 
 void GameTable::RenderGameTable(){
     p1.Render(rWin);
+    rWin.textRender({255, 255, 255}, {0, H_RES - 70 * c_scale}, 20, std::to_string(p1.getIndx()));
     ai.Render(rWin);
     deck.Render(rWin);
     pile.Render(rWin);
@@ -53,7 +54,7 @@ void GameTable::PlayerMovesLeft(){
 }
 
 void GameTable::PlayerMovesRight(){
-    if (p1.indx != p1.c.size()) {p1.indx+=1;};
+    if (p1.indx != p1.c.size()-1) {p1.indx+=1;};
     return;
 }
 
@@ -89,14 +90,21 @@ std::vector <bool> GameTable::CheckMoves(bool player){
     return tmp;
 }
 
-bool GameTable::PlayerPlay(){
-    std::vector<bool> set = CheckMoves(true);
-    if (set[p1.getIndx()])
-    {
-        pile.c.push_back(p1.c[p1.getIndx()]);
-        p1.c.erase(p1.c.begin() + p1.indx);
+void GameTable::PlayerPlay(){
+
+    int indx = p1.getIndx();
+    Card Played = p1.c[indx];
+    Card topPile = pile.getCardOnTop();
+    bool isMoveValid = checkMove(Played, topPile);
+
+    if(isMoveValid){
+        pile.c.push_back(p1.c[indx]);
+        p1.c.erase(p1.c.begin() + indx);
+        if (indx == p1.c.size()) {p1.indx --;}
         
-        return true;
+        //if (Played == 13){} //Choose a color
+        //if (Played == 14){} //Choose a color and opponents draw 4
     }
-    return false;
+
+
 }

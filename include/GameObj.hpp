@@ -56,6 +56,7 @@ class DiscardPile : public CardArray
 public:
     int getCol(){return c.back().col;};
     int getVal(){return c.back().val;};
+    Card getCardOnTop(){return c.back();};
     void Render(RenderWindow& p_win);
     void Reset();
 };

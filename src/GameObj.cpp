@@ -160,7 +160,6 @@ void Player::Render(RenderWindow& p_win){
     tmp[indx] = Entity(posIndx, tmp[indx].getTex());
 
     for (Entity& e : tmp){p_win.render(e);}
-
     
 }
 

@@ -4,6 +4,7 @@
 
 #include "RenderWindow.hpp"
 #include "GameObj.hpp"
+#include "Utils.hpp"
 
 class GameTable
 {
@@ -23,7 +24,7 @@ public:
     void RenderGameTable();
     std::vector <bool> CheckMoves(bool player);
 
-    bool PlayerPlay();
+    void PlayerPlay();
     void PlayerMovesLeft();
     void PlayerMovesRight();
 };

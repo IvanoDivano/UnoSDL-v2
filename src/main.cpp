@@ -15,6 +15,13 @@ bool ShoudlDrawCard = false;
 bool ShouldMoveLeft = false;
 bool ShouldMoveRight = false;
 bool TryPlayCard = false;
+bool isChoosingColor = false;
+bool BlackCardPlayed = false;
+bool EnemShouldDraw4 = false;
+bool EnemShouldDraw2 = false;
+bool HasChoosen = false;
+
+unsigned int colorChoosen = 99;
 
 int main(int argc, char const *argv[])
 {
@@ -35,12 +42,22 @@ int main(int argc, char const *argv[])
     Enemy ai;
     Deck deck;
     DiscardPile pile;
+
+    SDL_Texture* chooseTex;
+    chooseTex = window.loadTexture("res/gfx/ChooseColor.png");
+
     
     GameTable Game {p1, ai, deck, pile, window};
     Game.AddRenderer(window);
     Game.StartTheGame();
     window.setFullScreen();
     SDL_Event event;
+
+    /*
+    SDL_Texture* tmp_tex;
+    tmp_tex = window.loadTexture("res/gfx/ChooseColor.png");
+    Entity tmp_ent({W_RES/2, H_RES/2}, {192, 192}, tmp_tex);
+    */
 
     while (gameRunning)
     {
@@ -70,6 +87,14 @@ int main(int argc, char const *argv[])
                         //toggle fullscreen, changes scale and res
                         //window.setFullScreen
                         break;
+
+                        case SDLK_w: if (isChoosingColor) {colorChoosen = 2; HasChoosen = true;} break;
+
+                        case SDLK_a: if (isChoosingColor) {colorChoosen = 1; HasChoosen = true;} break;
+
+                        case SDLK_s: if (isChoosingColor) {colorChoosen = 3; HasChoosen = true;} break;
+
+                        case SDLK_d: if (isChoosingColor) {colorChoosen = 0; HasChoosen = true;} break;
                     }
                 break;
             }
@@ -79,10 +104,34 @@ int main(int argc, char const *argv[])
 
         Game.RenderGameTable();
         
-        if (ShouldMoveLeft) {Game.PlayerMovesLeft(); ShouldMoveLeft = false;}
-        if (ShouldMoveRight) {Game.PlayerMovesRight(); ShouldMoveRight = false;}
-        if (TryPlayCard) {Game.PlayerPlay(); TryPlayCard = false;}
-        if (ShoudlDrawCard) {Game.PlayerDraws(1); ShoudlDrawCard = false;}
+        
+
+        if(!isChoosingColor)
+        {
+            if(ShouldMoveLeft) {Game.PlayerMovesLeft(); ShouldMoveLeft = false;}
+            if(ShouldMoveRight) {Game.PlayerMovesRight(); ShouldMoveRight = false;}
+            if(TryPlayCard) {Game.PlayerPlay(BlackCardPlayed, EnemShouldDraw4, EnemShouldDraw4); TryPlayCard = false;}
+            if(ShoudlDrawCard) {Game.PlayerDraws(1); ShoudlDrawCard = false;}
+            
+            if(BlackCardPlayed) {isChoosingColor = true; BlackCardPlayed = false;};
+            if(EnemShouldDraw2) {Game.OpponentDraws(2); EnemShouldDraw2 = false;}
+            if(EnemShouldDraw4) {Game.OpponentDraws(4); EnemShouldDraw4 = false;}
+        }
+
+        else
+        {
+            renderChoosePopup(chooseTex, window);
+            
+            if (HasChoosen)
+            {
+                Game.PileColorSetter(colorChoosen); 
+                isChoosingColor = false; 
+                HasChoosen = false;
+            };
+        }
+
+
+
         window.display();
     }
 

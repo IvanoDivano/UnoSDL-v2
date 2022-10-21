@@ -24,7 +24,8 @@ public:
     void RenderGameTable();
     std::vector <bool> CheckMoves(bool player);
 
-    void PlayerPlay();
+    void PlayerPlay(bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& EnemShouldDraw2);
     void PlayerMovesLeft();
     void PlayerMovesRight();
+    void PileColorSetter(int col);
 };

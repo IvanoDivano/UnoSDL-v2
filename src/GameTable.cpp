@@ -90,7 +90,7 @@ std::vector <bool> GameTable::CheckMoves(bool player){
     return tmp;
 }
 
-void GameTable::PlayerPlay(){
+void GameTable::PlayerPlay(bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& EnemShouldDraw2){
 
     int indx = p1.getIndx();
     Card Played = p1.c[indx];
@@ -102,9 +102,11 @@ void GameTable::PlayerPlay(){
         p1.c.erase(p1.c.begin() + indx);
         if (indx == p1.c.size()) {p1.indx --;}
         
-        //if (Played == 13){} //Choose a color
-        //if (Played == 14){} //Choose a color and opponents draw 4
+        if (Played.val == 13){BlackCardPlayed = true;} //Choose a color
+        if (Played.val == 14){BlackCardPlayed = true; EnemShouldDraw4 = true;} //Choose a color and opponents draw 4
     }
+}
 
-
+void GameTable::PileColorSetter(int col){
+    this->pile.c.back().col = col;
 }

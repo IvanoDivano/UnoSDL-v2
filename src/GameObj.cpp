@@ -134,6 +134,7 @@ void Deck::Shuffle()
 void Player::Render(RenderWindow& p_win){
     float cWidth = 50 * c_scale;
     float cHeight = 70 * c_scale;
+    SDL_Point cSize = {50, 70};
     int cSide = 20 * c_scale;
 
     int cSpaceTanken = ((c.size()-1) * cSide) + cWidth;
@@ -150,14 +151,14 @@ void Player::Render(RenderWindow& p_win){
     
     for(Card card : this->c)
     {
-        tmp.push_back(Entity(pos, card.tex));
+        tmp.push_back(Entity(pos, cSize, card.tex));
         pos.x += cSide;
     }
 
     //Figure out how many lines to draw
 
     
-    tmp[indx] = Entity(posIndx, tmp[indx].getTex());
+    tmp[indx] = Entity(posIndx, cSize, tmp[indx].getTex());
 
     for (Entity& e : tmp){p_win.render(e);}
     
@@ -166,7 +167,7 @@ void Player::Render(RenderWindow& p_win){
 void Enemy::Render(RenderWindow& p_win)
 {
     SDL_Texture* backTex = p_win.loadTexture("res/gfx/Back.png");
-
+    SDL_Point cSize = {50, 70};
     int cSide = 20;
     float cWidth = 50 * c_scale;
     float cHeight = 70 * c_scale;
@@ -176,7 +177,7 @@ void Enemy::Render(RenderWindow& p_win)
 
     for(int i = 0; i < c.size(); i++)
     {
-        tmp.push_back(Entity(point, backTex));
+        tmp.push_back(Entity(point, cSize, backTex));
         point.x -= cSide;
     }
 
@@ -187,7 +188,8 @@ void Deck::Render(RenderWindow& p_win)
 {
     SDL_Texture* backTex = p_win.loadTexture("res/gfx/Back.png");
     SDL_Point pos {((W_RES / 3) * 2) - 50*c_scale/2, H_RES/2 - 70*c_scale/2};
-    Entity e(pos, backTex);
+    SDL_Point cSize = {50, 70};
+    Entity e(pos, cSize, backTex);
     p_win.render(e);
     pos.x += 50*c_scale + 30;
     pos.y += 5;
@@ -198,7 +200,8 @@ void Deck::Render(RenderWindow& p_win)
 
 void DiscardPile::Render(RenderWindow& p_win)
 {
-    SDL_Point pos {(W_RES / 3) - 50*c_scale/2, H_RES/2 - 70*c_scale/2}; 
-    Entity e(pos, c.back().tex);
+    SDL_Point cSize = {50, 70};
+    SDL_Point pos = {(W_RES / 3) - 50*c_scale/2, H_RES/2 - 70*c_scale/2}; 
+    Entity e(pos, cSize, c.back().tex);
     p_win.render(e);
 }

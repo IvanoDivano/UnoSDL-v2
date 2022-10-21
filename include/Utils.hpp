@@ -3,4 +3,4 @@
 
 bool checkMove(Card t, Card b);
 
-int chooseColor();
+void renderChoosePopup(SDL_Texture* tex, RenderWindow& win);

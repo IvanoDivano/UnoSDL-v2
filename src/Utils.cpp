@@ -9,4 +9,13 @@ bool checkMove(Card t, Card b){
     return sameVal || sameCol || isBlack;
 }
 
-int chooseColor();
+
+void renderChoosePopup(SDL_Texture* tex, RenderWindow& win){
+    
+    SDL_Point pos = {(W_RES - 192*c_scale) / 2, (H_RES - 192*c_scale) / 2};
+
+
+    Entity tmp(pos, {192, 192}, tex);
+
+    win.render(tmp);
+}

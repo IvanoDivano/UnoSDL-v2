@@ -22,10 +22,10 @@ public:
     void PlayerDraws(int n);
     void OpponentDraws(int n);
     void RenderGameTable();
-    std::vector <bool> CheckMoves(bool player);
 
-    void PlayerPlay(bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& EnemShouldDraw2);
+    void PlayerPlay(bool& TryPlayCard, bool& PlayerTurn, bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& EnemShouldDraw2, bool& P1Won);
     void PlayerMovesLeft();
     void PlayerMovesRight();
     void PileColorSetter(int col);
+    void EnemyPlay(bool& AIWon);
 };

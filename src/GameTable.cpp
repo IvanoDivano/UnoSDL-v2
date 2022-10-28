@@ -56,41 +56,11 @@ void GameTable::PlayerMovesLeft(){
 void GameTable::PlayerMovesRight(){
     if (p1.indx != p1.c.size()-1) {p1.indx+=1;};
     return;
-}
+};
 
-std::vector <bool> GameTable::CheckMoves(bool player){
-    //player true if the enemy is not playing;
 
-    int nCards;
-    int pColor = pile.getCol();
-    int pValue = pile.getVal();
-    int indx = p1.getIndx();
-    std::vector <Card> c;
-    
-    if (player) {nCards == p1.c.size();}
-    else {nCards == ai.c.size();}
 
-    std::vector <bool> tmp;
-    
-    bool NoMoves = true;
-    bool SameVal;
-    bool SameCol;
-    bool IsBlack;
-    for(int i = 0; i < nCards; i++)
-    {
-        SameVal = c[indx].val == pValue;
-        SameCol = c[indx].col == pColor;
-        IsBlack = c[indx].val == 13 || c[indx].val == 14;
-        tmp[i] = SameVal || SameCol || IsBlack;
-        if (tmp[i]) NoMoves = false;
-    }
-
-    if (NoMoves){tmp.push_back(false);}
-
-    return tmp;
-}
-
-void GameTable::PlayerPlay(bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& EnemShouldDraw2){
+void GameTable::PlayerPlay(bool& TryPlayCard, bool& PlayerTurn, bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& EnemShouldDraw2, bool& P1Won){
 
     int indx = p1.getIndx();
     Card Played = p1.c[indx];
@@ -104,9 +74,53 @@ void GameTable::PlayerPlay(bool& BlackCardPlayed, bool& EnemShouldDraw4, bool& E
         
         if (Played.val == 13){BlackCardPlayed = true;} //Choose a color
         if (Played.val == 14){BlackCardPlayed = true; EnemShouldDraw4 = true;} //Choose a color and opponents draw 4
+        PlayerTurn = false;
+
+        if (p1.c.size() == 0){P1Won = true;}
     }
+
+    TryPlayCard = false;
+
+    
 }
 
-void GameTable::PileColorSetter(int col){
-    this->pile.c.back().col = col;
+void GameTable::PileColorSetter(int col){ this->pile.c.back().col = col; }
+
+void GameTable::EnemyPlay(bool& AIWon)
+{
+    /*Getting available move*/
+    std::vector <bool> aMoves;
+
+    bool CanPlay = false;
+    bool check;
+
+
+    for(Card c : ai.c)
+    {
+        check = checkMove(c, pile.getCardOnTop());
+        aMoves.push_back(check);
+        if (check) {CanPlay = true;}
+    }
+
+    if(!CanPlay){this->OpponentDraws(1);}
+    
+    else
+    {
+        int indx;
+        srand(time(NULL));
+        do
+        {
+            indx = rand()%aMoves.size();
+        }while(!aMoves[indx]);
+
+        /*Play the card*/
+
+        Card ctmp = ai.c[indx];
+
+        pile.c.push_back(ai.c[indx]);
+        ai.c.erase(ai.c.begin() + indx);
+        if (ai.c.size() == 0) {AIWon = true;}
+        if (ctmp.val == 13){this->PileColorSetter(rand()%4);}
+        if (ctmp.val == 14){this->PileColorSetter(rand()%4); this->PlayerDraws(4);}
+    }
 }

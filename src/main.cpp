@@ -20,6 +20,12 @@ bool BlackCardPlayed = false;
 bool EnemShouldDraw4 = false;
 bool EnemShouldDraw2 = false;
 bool HasChoosen = false;
+bool PlayerTurn = true;
+bool IsGameOver = false;
+
+bool P1Won = false;
+bool AIWon = false;
+
 
 unsigned int colorChoosen = 99;
 
@@ -71,11 +77,10 @@ int main(int argc, char const *argv[])
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym)
                     {
-                        case SDLK_ESCAPE:
-                        gameRunning = false; break;
-
+                        case SDLK_ESCAPE: gameRunning = false; break;
+                        
                         case SDLK_LCTRL:
-                        ShoudlDrawCard = true; break;
+                        ShoudlDrawCard = true; PlayerTurn = false; break;
 
                         case SDLK_LEFT: ShouldMoveLeft = true; break;
 
@@ -105,31 +110,40 @@ int main(int argc, char const *argv[])
         Game.RenderGameTable();
         
         
-
-        if(!isChoosingColor)
+        if(PlayerTurn)
         {
-            if(ShouldMoveLeft) {Game.PlayerMovesLeft(); ShouldMoveLeft = false;}
-            if(ShouldMoveRight) {Game.PlayerMovesRight(); ShouldMoveRight = false;}
-            if(TryPlayCard) {Game.PlayerPlay(BlackCardPlayed, EnemShouldDraw4, EnemShouldDraw4); TryPlayCard = false;}
-            if(ShoudlDrawCard) {Game.PlayerDraws(1); ShoudlDrawCard = false;}
-            
-            if(BlackCardPlayed) {isChoosingColor = true; BlackCardPlayed = false;};
-            if(EnemShouldDraw2) {Game.OpponentDraws(2); EnemShouldDraw2 = false;}
-            if(EnemShouldDraw4) {Game.OpponentDraws(4); EnemShouldDraw4 = false;}
-        }
+            if(!isChoosingColor)
+            {
+                if(ShouldMoveLeft) {Game.PlayerMovesLeft(); ShouldMoveLeft = false;}
+                if(ShouldMoveRight) {Game.PlayerMovesRight(); ShouldMoveRight = false;}
+                if(TryPlayCard) {Game.PlayerPlay(TryPlayCard, PlayerTurn, BlackCardPlayed, EnemShouldDraw4, EnemShouldDraw2, P1Won);}
+                if(ShoudlDrawCard) {Game.PlayerDraws(1); ShoudlDrawCard = false; PlayerTurn = false;}
+                
+                if(BlackCardPlayed) {isChoosingColor = true; BlackCardPlayed = false;};
+                if(EnemShouldDraw2) {Game.OpponentDraws(2); EnemShouldDraw2 = false;}
+                if(EnemShouldDraw4) {Game.OpponentDraws(4); EnemShouldDraw4 = false;}
 
+            }
+
+            else
+            {
+                renderChoosePopup(chooseTex, window);
+                if (HasChoosen)
+                {
+                    Game.PileColorSetter(colorChoosen); 
+                    isChoosingColor = false; 
+                    HasChoosen = false;
+                };
+                
+            }
+        }
         else
         {
-            renderChoosePopup(chooseTex, window);
-            
-            if (HasChoosen)
-            {
-                Game.PileColorSetter(colorChoosen); 
-                isChoosingColor = false; 
-                HasChoosen = false;
-            };
+            SDL_Delay(500);
+            Game.EnemyPlay(AIWon); PlayerTurn = true;
+            window.display();
+            /*AI turn, it tries to make a move, or it draws */
         }
-
 
 
         window.display();
@@ -138,4 +152,6 @@ int main(int argc, char const *argv[])
     window.cleanUp();
     SDL_Quit();
     return 0;
+
+    /*wingi*/
 }
